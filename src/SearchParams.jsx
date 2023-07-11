@@ -1,21 +1,23 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import useBreedList from "./useBreedList";
 import Results from "./Results";
 import { useQuery } from "@tanstack/react-query";
 import fetchrequestPets from "./fetchrequestPets";
-import adoptedPetContext from "./AdoptedPetContext";
+import { useSelector, useDispatch } from "react-redux";
+import { all } from "./searchParamsSlice";
 
 const SearchParams = () => {
   let animals = ["dog", "cat", "bird", "rabbit", "reptlie"];
-  let [data, setData] = useState({
-    location: "",
-    animal: "",
-    breed: "",
-  });
+  // let [data, setData] = useState({
+  //   location: "",
+  //   animal: "",
+  //   breed: "",
+  // });
   let [animal, setAnimal] = useState("");
   let [breeds] = useBreedList(animal);
-  let [adotedPet] = useContext(adoptedPetContext);
-
+  const dispatch = useDispatch();
+  const adoptedPet = useSelector((state) => state.AdoptPetSlice.value);
+  const data = useSelector((state) => state.searchParamsSlice.value);
   let result = useQuery(["request", data], fetchrequestPets);
   return (
     <div className="search-params">
@@ -28,12 +30,12 @@ const SearchParams = () => {
             animal: formdata.get("animal") ?? "",
             breed: formdata.get("breed") ?? "",
           };
-          setData(obj);
+          dispatch(all(obj));
         }}
       >
-        {adotedPet ? (
+        {adoptedPet ? (
           <div className="pet image-container">
-            <img src={adotedPet.images[0]} alt="adopted Pet" />
+            <img src={adoptedPet.images[0]} alt="adopted Pet" />
           </div>
         ) : null}
         <label htmlFor="searchParams">

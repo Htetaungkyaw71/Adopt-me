@@ -5,13 +5,14 @@ import fetchPet from "./fetchPet";
 import Carousel from "./Carousel";
 import ErrorBoundary from "./ErrorBoundary";
 import Modal from "./Modal";
-import { useState, useContext } from "react";
-import adoptedPetContext from "./AdoptedPetContext";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { adopt } from "./AdoptPetSlice";
 
 const Detail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [_, setAdoptedPet] = useContext(adoptedPetContext);
+  const dispatch = useDispatch();
   const results = useQuery(["details", id], fetchPet);
   const [showModal, setShowModal] = useState(false);
 
@@ -41,7 +42,7 @@ const Detail = () => {
               <div className="buttons">
                 <button
                   onClick={() => {
-                    setAdoptedPet(pet);
+                    dispatch(adopt(pet));
                     navigate("/");
                   }}
                 >
