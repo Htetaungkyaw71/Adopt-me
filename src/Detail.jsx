@@ -1,29 +1,27 @@
 /* eslint-disable no-unused-vars */
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import fetchPet from "./fetchPet";
 import Carousel from "./Carousel";
 import ErrorBoundary from "./ErrorBoundary";
 import Modal from "./Modal";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { adopt } from "./AdoptPetSlice";
+import { useGetPetQuery } from "./petApiService";
 
 const Detail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const results = useQuery(["details", id], fetchPet);
+  let { isLoading, data: pet } = useGetPetQuery(id);
   const [showModal, setShowModal] = useState(false);
 
-  if (results.isLoading) {
+  if (isLoading) {
     return (
       <div className="loading-pane">
         <h2 className="loader">🐶</h2>
       </div>
     );
   }
-  const pet = results.data.pets[0];
 
   return (
     <div className="details">
